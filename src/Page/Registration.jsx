@@ -1,14 +1,25 @@
+import useAuth from "../Component/Hooks/useAuth";
 
 const Registration = () => {
+  
+  const {createUser} = useAuth();
 
   const handleRegistration = (e)=>{
-
     e.preventDefault();
+
+    const email= e.target.email.value;
+    const pin= e.target.pin.value;
+    const password= pin + "MFS";
+
+    createUser(email, password)
+    .then(res => console.log(res.user))
+    .catch(err=> console.log(err))
+
     const userInfo = {
       user_name: e.target.name.value,
       user_phone: e.target.phone.value,
-      user_email: e.target.email.value,
-      user_pin: e.target.pin.value,
+      user_email: email,
+      user_pin: pin,
     }
     console.log(userInfo);
   }
