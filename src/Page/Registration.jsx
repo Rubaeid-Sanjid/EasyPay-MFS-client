@@ -2,6 +2,7 @@
 const Registration = () => {
 
   const handleRegistration = (e)=>{
+
     e.preventDefault();
     const userInfo = {
       user_name: e.target.name.value,
