@@ -1,8 +1,9 @@
+import Swal from "sweetalert2";
 import useAuth from "../Component/Hooks/useAuth";
 
 const Registration = () => {
   
-  const {createUser} = useAuth();
+  const {createUser, updateUser} = useAuth();
 
   const handleRegistration = (e)=>{
     e.preventDefault();
@@ -12,7 +13,21 @@ const Registration = () => {
     const password= pin + "MFS";
 
     createUser(email, password)
-    .then(res => console.log(res.user))
+    .then(res => {
+      if(res.user){
+        updateUser(e.target.name.value)
+        .then(()=>{
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your have been registered",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          console.log(res.user)
+        })
+      }
+    })
     .catch(err=> console.log(err))
 
     const userInfo = {
