@@ -94,7 +94,7 @@ const SignIn = () => {
               </div>
               <h4 className="text-center">
                 Don't have an account ?{" "}
-                <Link to={"/"} className="text-blue-600 font-semibold">
+                <Link to={"/registration"} className="text-blue-600 font-semibold">
                   Register Now!
                 </Link>
               </h4>

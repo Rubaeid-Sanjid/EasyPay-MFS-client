@@ -123,7 +123,7 @@ const Registration = () => {
               </div>
               <h4 className="text-center">
                 Already have an account ?{" "}
-                <Link to={"/login"} className="text-blue-600 font-semibold">
+                <Link to={"/"} className="text-blue-600 font-semibold">
                   Login
                 </Link>
               </h4>
