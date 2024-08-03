@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { createContext } from 'react';
 import { auth } from '../Firebase/FirebaseConfig';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export const AuthContext = createContext();
 
@@ -15,6 +15,10 @@ const AuthProvider = ({children}) => {
         return updateProfile(auth.currentUser, {displayName: userName })
     }
 
+    const loginUser = async(email, pin)=>{
+        return await signInWithEmailAndPassword(auth, email, pin)
+    }
+
     // window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
     //     'size': 'invisible',
     //     'callback': () => {
@@ -26,7 +30,8 @@ const AuthProvider = ({children}) => {
     //     return signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
     // }
 
-    const authInfo = {createUser, updateUser};
+    const authInfo = {createUser, updateUser, loginUser};
+
     return (
         <AuthContext.Provider value={authInfo}>
             {children}

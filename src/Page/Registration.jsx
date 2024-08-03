@@ -1,43 +1,44 @@
 import Swal from "sweetalert2";
 import useAuth from "../Component/Hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const Registration = () => {
-  
-  const {createUser, updateUser} = useAuth();
+  const { createUser, updateUser } = useAuth();
 
-  const handleRegistration = (e)=>{
+  const handleRegistration = (e) => {
     e.preventDefault();
 
-    const email= e.target.email.value;
-    const pin= e.target.pin.value;
-    const password= pin + "MFS";
+    const email = e.target.email.value;
+    const pin = e.target.pin.value;
+    const password = pin + "MFS";
 
     createUser(email, password)
-    .then(res => {
-      if(res.user){
-        updateUser(e.target.name.value)
-        .then(()=>{
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Your have been registered",
-            showConfirmButton: false,
-            timer: 1500
+      .then((res) => {
+        if (res.user) {
+          updateUser(e.target.name.value).then(() => {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Your have been registered",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            console.log(res.user);
           });
-          console.log(res.user)
-        })
-      }
-    })
-    .catch(err=> console.log(err))
+        }
+      })
+      .catch((err) => console.log(err));
 
     const userInfo = {
       user_name: e.target.name.value,
       user_phone: e.target.phone.value,
       user_email: email,
       user_pin: pin,
-    }
+      user_status: "Pending",
+      balance: 0,
+    };
     console.log(userInfo);
-  }
+  };
   return (
     <>
       <div className="bg-gradient-to-r from-[#87CEEB] to-[#ADD8E6] min-h-screen flex items-center">
@@ -118,8 +119,14 @@ const Registration = () => {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn bg-[#ADD8E6] text-lg">Login</button>
+                <button className="btn bg-[#ADD8E6] text-lg">Register</button>
               </div>
+              <h4 className="text-center">
+                Already have an account ?{" "}
+                <Link to={"/login"} className="text-blue-600 font-semibold">
+                  Login
+                </Link>
+              </h4>
             </form>
           </div>
         </div>
