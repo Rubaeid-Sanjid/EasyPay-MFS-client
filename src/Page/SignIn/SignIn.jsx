@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Component/Hooks/useAuth";
 import Swal from "sweetalert2";
 
 const SignIn = () => {
   const { loginUser } = useAuth();
+  const navigate = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -20,6 +22,7 @@ const SignIn = () => {
           timer: 1500,
         });
         // console.log(res.user):
+        navigate('dashboard');
       }
     });
   };
