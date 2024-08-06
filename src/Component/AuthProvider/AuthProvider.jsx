@@ -1,64 +1,74 @@
-import PropTypes from 'prop-types';
-import { createContext, useEffect, useState } from 'react';
-import { auth } from '../Firebase/FirebaseConfig';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import PropTypes from "prop-types";
+import { createContext, useEffect, useState } from "react";
+import { auth } from "../Firebase/FirebaseConfig";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 export const AuthContext = createContext();
 
-const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const createUser = (email, pin)=>{
-        setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, pin)
-    }
-    
-    const updateUser = (userName)=>{
-        setLoading(true);
-        return updateProfile(auth.currentUser, {displayName: userName })
-    }
+  const createUser = (email, pin) => {
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, pin);
+  };
 
-    const loginUser = async(email, pin)=>{
-        setLoading(true);
-        return await signInWithEmailAndPassword(auth, email, pin)
-    }
+  const updateUser = (userName) => {
+    setLoading(true);
+    return updateProfile(auth.currentUser, { displayName: userName });
+  };
 
-    useEffect(()=>{
-        const unSubscribe = onAuthStateChanged(auth, (currentUser)=>{
-            if(currentUser){
-                setUser(currentUser)
-                
-            }
-            setLoading(false)
-        })
+  const loginUser = async (email, pin) => {
+    setLoading(true);
+    return await signInWithEmailAndPassword(auth, email, pin);
+  };
 
-        return ()=>{
-            unSubscribe();
-        }
-    },[])
-    // window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-    //     'size': 'invisible',
-    //     'callback': () => {
-    //       console.log('Recaptcha verified');
-    //     }
-    //   }, auth);
+  const axiosPublic = useAxiosPublic();
 
-    // const signInWithUserNumber = (phoneNumber)=>{
-    //     return signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
-    // }
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        const userEmail = { email: currentUser.email };
+        axiosPublic.post("/jwt", userEmail).then((res) => {
+          const token = res.token;
+          localStorage.setItem("token", token);
+        });
+      }
+      setLoading(false);
+    });
 
-    const authInfo = {user, loading, createUser, updateUser, loginUser};
+    return () => {
+      unSubscribe();
+    };
+  }, []);
+  // window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+  //     'size': 'invisible',
+  //     'callback': () => {
+  //       console.log('Recaptcha verified');
+  //     }
+  //   }, auth);
 
-    return (
-        <AuthContext.Provider value={authInfo}>
-            {children}
-        </AuthContext.Provider>
-    );
+  // const signInWithUserNumber = (phoneNumber)=>{
+  //     return signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
+  // }
+
+  const authInfo = { user, loading, createUser, updateUser, loginUser };
+
+  return (
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 AuthProvider.propTypes = {
-    children: PropTypes.node,
+  children: PropTypes.node,
 };
 
 export default AuthProvider;
