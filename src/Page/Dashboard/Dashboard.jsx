@@ -1,8 +1,28 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import useAuth from "../../Component/Hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, logOutUser } = useAuth();
+const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logOutUser()
+      .then(() => {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Sign-out successful",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/");
+        localStorage.removeItem("token");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
   return (
     <div>
       <div className="drawer lg:drawer-open">
@@ -23,14 +43,25 @@ const Dashboard = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4 flex justify-between">
             {/* Sidebar content here */}
-            <li>
-              <NavLink to={'transactions'}>Transactions</NavLink>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
+            <div>
+                <h2 className="text-3xl font-bold text-blue-600 mb-3">EasyPay</h2>
+                <h3 className="text-lg font-medium">
+                  Account Holder:{user?.displayName}
+                </h3>
+              <li>
+                <NavLink to={"transactions"}>Transactions</NavLink>
+              </li>
+              <li>
+                <a></a>
+              </li>
+            </div>
+            <div>
+              <li>
+                <button onClick={handleLogout}>Log Out</button>
+              </li>
+            </div>
           </ul>
         </div>
       </div>

@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signOut,
   updateProfile,
 } from "firebase/auth";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
@@ -30,6 +31,9 @@ const AuthProvider = ({ children }) => {
     return await signInWithEmailAndPassword(auth, email, pin);
   };
 
+  const logOutUser = ()=>{
+    return signOut(auth);
+  }
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
@@ -63,7 +67,7 @@ const AuthProvider = ({ children }) => {
   //     return signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
   // }
 
-  const authInfo = { user, loading, createUser, updateUser, loginUser };
+  const authInfo = { user, loading, createUser, updateUser, loginUser, logOutUser };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
