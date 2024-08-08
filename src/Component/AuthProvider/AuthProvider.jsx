@@ -38,8 +38,11 @@ const AuthProvider = ({ children }) => {
         setUser(currentUser);
         const userEmail = { email: currentUser.email };
         axiosPublic.post("/jwt", userEmail).then((res) => {
-          const token = res.token;
-          localStorage.setItem("token", token);
+          if(res.data.token){
+            const token = res.data.token;
+ 
+            localStorage.setItem("token", token);
+          }
         });
       }
       setLoading(false);
