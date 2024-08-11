@@ -1,12 +1,18 @@
 import Swal from "sweetalert2";
 import useAuth from "../Component/Hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { axiosPublic } from "../Component/Hooks/useAxiosPublic";
+import { useState } from "react";
+import { ImSpinner9 } from "react-icons/im";
 
 const Registration = () => {
   const { createUser, updateUser } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleRegistration = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const email = e.target.email.value;
     const pin = e.target.pin.value;
@@ -16,28 +22,34 @@ const Registration = () => {
       .then((res) => {
         if (res.user) {
           updateUser(e.target.name.value).then(() => {
-            Swal.fire({
-              position: "top-end",
-              icon: "success",
-              title: "Your have been registered",
-              showConfirmButton: false,
-              timer: 1500,
+            const userInfo = {
+              user_name: e.target.name.value,
+              user_phone: e.target.phone.value,
+              user_email: email,
+              user_pin: pin,
+              user_status: "Pending",
+              balance: 0,
+            };
+            console.log(userInfo);
+
+            axiosPublic.post("/users", userInfo).then((res) => {
+              if (res.data.insertedId) {
+                setLoading(false);
+                e.target.reset();
+                Swal.fire({
+                  position: "top-end",
+                  icon: "success",
+                  title: "Your have been registered",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                navigate('/');
+              }
             });
-            console.log(res.user);
           });
         }
       })
       .catch((err) => console.log(err));
-
-    const userInfo = {
-      user_name: e.target.name.value,
-      user_phone: e.target.phone.value,
-      user_email: email,
-      user_pin: pin,
-      user_status: "Pending",
-      balance: 0,
-    };
-    console.log(userInfo);
   };
   return (
     <>
@@ -118,8 +130,14 @@ const Registration = () => {
                   </a>
                 </label>
               </div>
-              <div className="form-control mt-6">
-                <button className="btn bg-[#ADD8E6] text-lg">Register</button>
+              <div className="form-control mt-3">
+                {loading ? (
+                  <button className="btn bg-[#ADD8E6] text-lg">
+                    <ImSpinner9 className="animate-spin" />
+                  </button>
+                ) : (
+                  <button className="btn bg-[#ADD8E6] text-lg">Register</button>
+                )}
               </div>
               <h4 className="text-center">
                 Already have an account ?{" "}
