@@ -1,19 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Component/Hooks/useAuth";
 import Swal from "sweetalert2";
+import { useState } from "react";
+import { ImSpinner9 } from "react-icons/im";
 
 const SignIn = () => {
   const { loginUser } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setLoading(true);
     const email = e.target.email.value;
     const pin = e.target.pin.value;
     const password = pin + "MFS";
 
     loginUser(email, password).then((res) => {
       if (res.user) {
+        setLoading(false);
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -22,7 +27,7 @@ const SignIn = () => {
           timer: 1500,
         });
         // console.log(res.user):
-        navigate('dashboard');
+        navigate("dashboard");
       }
     });
   };
@@ -93,11 +98,20 @@ const SignIn = () => {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn bg-[#ADD8E6] text-lg">Login</button>
+                {loading ? (
+                  <button className="btn bg-[#ADD8E6] text-lg">
+                    <ImSpinner9 className="animate-spin" />
+                  </button>
+                ) : (
+                  <button className="btn bg-[#ADD8E6] text-lg">Login</button>
+                )}
               </div>
               <h4 className="text-center">
                 Don't have an account ?{" "}
-                <Link to={"/registration"} className="text-blue-600 font-semibold">
+                <Link
+                  to={"/registration"}
+                  className="text-blue-600 font-semibold"
+                >
                   Register Now!
                 </Link>
               </h4>

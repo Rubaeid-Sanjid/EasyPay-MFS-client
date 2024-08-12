@@ -54,7 +54,13 @@ const navigate = useNavigate();
                 <NavLink to={"transactions"}>Transactions</NavLink>
               </li>
               <li>
-                <a></a>
+                <NavLink to={"transactions"}>Send Money</NavLink>
+              </li>
+              <li>
+                <NavLink to={"transactions"}>Cash Out</NavLink>
+              </li>
+              <li>
+                <NavLink to={"transactions"}>Balance</NavLink>
               </li>
             </div>
             <div>
