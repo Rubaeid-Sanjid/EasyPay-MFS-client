@@ -1,10 +1,12 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import useAuth from "../../Component/Hooks/useAuth";
 import Swal from "sweetalert2";
+import useUserInfo from "../../Component/Hooks/useUserInfo";
 
 const Dashboard = () => {
   const { user, logOutUser } = useAuth();
   const navigate = useNavigate();
+  const userInfo = useUserInfo();
 
   const handleLogout = () => {
     logOutUser()
@@ -54,7 +56,7 @@ const Dashboard = () => {
 
               <div>
                 {/* have to get user from database */}
-                {user?.user_status === "admin" ? (
+                {userInfo?.user_status === "admin" ? (
                   <>
                     <li>
                       <NavLink to={"transactions"}>User Management</NavLink>
@@ -63,7 +65,7 @@ const Dashboard = () => {
                       <NavLink to={"transactions"}>System Monitoring</NavLink>
                     </li>
                   </>
-                ) : user?.user_status === "agent" ? (
+                ) : userInfo?.user_status === "agent" ? (
                   <>
                     <li>
                       <NavLink to={"transactions"}>
