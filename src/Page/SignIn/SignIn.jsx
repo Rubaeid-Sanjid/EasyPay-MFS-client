@@ -8,10 +8,12 @@ const SignIn = () => {
   const { loginUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     const email = e.target.email.value;
     const pin = e.target.pin.value;
     const password = pin + "MFS";
@@ -29,7 +31,11 @@ const SignIn = () => {
         // console.log(res.user):
         navigate("dashboard");
       }
-    });
+    }).catch((err) => {
+      const errorMessage = err.message.split("/")[1].slice(0, -2);
+      setError(errorMessage);
+      setLoading(false);
+    });;
   };
   return (
     <>
@@ -97,6 +103,7 @@ const SignIn = () => {
                   </a>
                 </label>
               </div>
+              {error && <h3 className="text-center text-red-600">{error}</h3>}
               <div className="form-control mt-6">
                 {loading ? (
                   <button className="btn bg-[#ADD8E6] text-lg">

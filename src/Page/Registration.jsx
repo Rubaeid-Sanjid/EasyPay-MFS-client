@@ -8,11 +8,13 @@ import { ImSpinner9 } from "react-icons/im";
 const Registration = () => {
   const { createUser, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleRegistration = (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     const email = e.target.email.value;
     const pin = e.target.pin.value;
@@ -27,7 +29,7 @@ const Registration = () => {
               user_phone: e.target.phone.value,
               user_email: email,
               user_pin: pin,
-              user_status: "Pending",
+              user_status: "admin",
               balance: 0,
             };
             console.log(userInfo);
@@ -43,13 +45,17 @@ const Registration = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
-                navigate('/');
+                navigate("/");
               }
             });
           });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        const errorMessage = err.message.split("/")[1].slice(0, -2);
+        setError(errorMessage);
+        setLoading(false);
+      });
   };
   return (
     <>
@@ -130,6 +136,7 @@ const Registration = () => {
                   </a>
                 </label>
               </div>
+              {error && <h3 className="text-center text-red-600">{error}</h3>}
               <div className="form-control mt-3">
                 {loading ? (
                   <button className="btn bg-[#ADD8E6] text-lg">
